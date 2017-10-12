@@ -1,17 +1,17 @@
-
 # coding: utf-8
 
 import poplib
 import time
 from email.parser import Parser
 from email.header import decode_header
-from email.utils import parseaddr
-from email import encoders
-from email.header import Header
-from email.mime.text import MIMEText
-from email.utils import parseaddr, formataddr
 from envelopes import Envelope
-import email
+
+
+pophost = 'pop.126.com'
+smtphost = 'smtp.126.com'
+useremail = 'trainmonitor@126.com'
+toemail = 'fiercewind@outlook.com'
+password='mxnet123'
 
 
 def guess_charset(msg):
@@ -44,26 +44,23 @@ def Get_info(msg):
                 content = content.decode(charset)
             return content
 
-def SentEmail(message,subject):
+def SentEmail(message,subject,image=True):
     envelope = Envelope(
-    from_addr=(u'trainmonitor@126.com', u'Train'),
-    to_addr=(u'fiercewind@outlook.com', u'FierceX'),
+    from_addr=(useremail, u'Train'),
+    to_addr=(toemail, u'FierceX'),
     subject=subject,
     text_body=message
     )
+    if image:
+        envelope.add_attachment('NN.png')
     
-    envelope.add_attachment('1.png')
-    
-    envelope.send('smtp.126.com', login='trainmonitor@126.com',
-              password='mxnet123', tls=True)
+    envelope.send(smtphost, login=useremail,
+              password=password, tls=True)
     
 def ReEmail():
-    host = "pop.126.com"
-    user = "trainmonitor@126.com"
-    password = "mxnet123"
     try:
-        pp = poplib.POP3(host)
-        pp.user(user)
+        pp = poplib.POP3(pophost)
+        pp.user(useremail)
         pp.pass_(password)
         resp, mails, octets = pp.list()
         index = len(mails)
